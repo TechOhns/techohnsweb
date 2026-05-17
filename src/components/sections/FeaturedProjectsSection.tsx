@@ -38,13 +38,21 @@ const FEATURED_PROJECTS = [
   },
 ]
 
-const CATEGORY_COLORS: Record<string, string> = {
-  'Full Stack': '#007ACC',
-  'Web App': '#4D4D4D',
-  'Mobile + Web': '#007ACC',
+const CATEGORY_META: Record<string, { label: string; color: string; accent: string }> = {
+  web: { label: 'Web App', color: '#1a1a1a', accent: '#007ACC' },
+  mobile: { label: 'Mobile App', color: '#1a3a2a', accent: '#FFCC00' },
+  fullstack: { label: 'Full Stack', color: '#007ACC', accent: '#FFCC00' },
+  'ui-ux': { label: 'UI/UX Design', color: '#FFCC00', accent: '#007ACC' },
+  consulting: { label: 'Consulting', color: '#2d1a6e', accent: '#FFCC00' },
+  // Fallbacks for static projects
+  'Web App': { label: 'Web App', color: '#1a1a1a', accent: '#007ACC' },
+  'Mobile + Web': { label: 'Mobile App', color: '#1a3a2a', accent: '#FFCC00' },
+  'Full Stack': { label: 'Full Stack', color: '#007ACC', accent: '#FFCC00' },
 }
 
-export default function FeaturedProjectsSection() {
+export default function FeaturedProjectsSection({ projects }: { projects?: any[] }) {
+  const displayProjects = projects && projects.length > 0 ? projects : FEATURED_PROJECTS
+
   return (
     <section className="section-padding bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -99,101 +107,139 @@ export default function FeaturedProjectsSection() {
 
         {/* Projects grid */}
         <div className="grid lg:grid-cols-3 gap-6">
-          {FEATURED_PROJECTS.map((project, i) => (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.45, delay: i * 0.1 }}
-              className="group"
-            >
-              <Link href={`/projects/${project.slug}`} className="block">
-                {/* Cover */}
-                <div
-                  className="relative w-full h-56 rounded-2xl overflow-hidden mb-5 transition-transform duration-300 group-hover:scale-[1.02]"
-                  style={{ backgroundColor: project.cover_color }}
-                >
-                  {/* Decorative grid */}
-                  <div
-                    className="absolute inset-0 opacity-10"
-                    style={{
-                      backgroundImage:
-                        'linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)',
-                      backgroundSize: '32px 32px',
-                    }}
-                  />
+          {displayProjects.map((project, i) => {
+            const meta = CATEGORY_META[project.category] || { label: 'Project', color: '#007ACC', accent: '#FFCC00' }
+            const coverColor = project.cover_color || meta.color
 
-                  {/* Mock UI frame */}
-                  <div className="absolute inset-4 bg-white/10 rounded-xl border border-white/15 backdrop-blur-sm flex flex-col overflow-hidden">
-                    <div className="flex items-center gap-1.5 px-3 py-2 border-b border-white/10">
-                      <div className="w-2 h-2 rounded-full bg-white/30" />
-                      <div className="w-2 h-2 rounded-full bg-white/30" />
-                      <div className="w-2 h-2 rounded-full bg-white/30" />
-                    </div>
-                    <div className="flex-1 p-3 space-y-2">
-                      <div className="h-2 rounded bg-white/20 w-3/4" />
-                      <div className="h-2 rounded bg-white/15 w-1/2" />
-                      <div className="grid grid-cols-3 gap-2 mt-3">
-                        {[1, 2, 3].map((n) => (
-                          <div key={n} className="h-8 rounded-lg bg-white/10" />
-                        ))}
+            return (
+              <motion.div
+                key={project.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{ duration: 0.45, delay: i * 0.1 }}
+                className="group"
+              >
+                <Link href={`/projects/${project.slug}`} className="block">
+                  {/* Cover */}
+                  <div
+                    className="relative w-full h-56 rounded-2xl overflow-hidden mb-5 transition-transform duration-300 group-hover:scale-[1.02]"
+                    style={{ backgroundColor: coverColor }}
+                  >
+                    {/* Decorative grid */}
+                    <div
+                      className="absolute inset-0 opacity-10"
+                      style={{
+                        backgroundImage:
+                          'linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)',
+                        backgroundSize: '32px 32px',
+                      }}
+                    />
+
+                    {/* Live site iframe or Cover Image or Mock UI frame */}
+                    {project.live_url ? (
+                      <div className="absolute inset-4 rounded-xl border border-white/15 backdrop-blur-sm flex flex-col overflow-hidden bg-white">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 border-b border-gray-200 bg-gray-50 flex-shrink-0">
+                          <div className="w-1.5 h-1.5 rounded-full bg-red-400" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-yellow-400" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
+                          <div className="ml-2 flex-1 bg-white border border-gray-200 rounded px-2 py-0.5 text-[8px] text-gray-400 truncate select-none pointer-events-none">
+                            {project.live_url}
+                          </div>
+                        </div>
+                        <div className="flex-1 w-full h-full overflow-hidden relative">
+                          <iframe 
+                            src={project.live_url} 
+                            style={{
+                              width: '1024px',
+                              height: '600px',
+                              transform: 'scale(0.31)',
+                              transformOrigin: 'top left',
+                              border: 'none',
+                              pointerEvents: 'none',
+                            }}
+                            title={project.title}
+                          />
+                        </div>
+                      </div>
+                    ) : project.cover_image ? (
+                      <img 
+                        src={project.cover_image} 
+                        alt={project.title} 
+                        className="absolute inset-0 w-full h-full object-cover" 
+                      />
+                    ) : (
+                      <div className="absolute inset-4 bg-white/10 rounded-xl border border-white/15 backdrop-blur-sm flex flex-col overflow-hidden">
+                        <div className="flex items-center gap-1.5 px-3 py-2 border-b border-white/10">
+                          <div className="w-2 h-2 rounded-full bg-white/30" />
+                          <div className="w-2 h-2 rounded-full bg-white/30" />
+                          <div className="w-2 h-2 rounded-full bg-white/30" />
+                        </div>
+                        <div className="flex-1 p-3 space-y-2">
+                          <div className="h-2 rounded bg-white/20 w-3/4" />
+                          <div className="h-2 rounded bg-white/15 w-1/2" />
+                          <div className="grid grid-cols-3 gap-2 mt-3">
+                            {[1, 2, 3].map((n) => (
+                              <div key={n} className="h-8 rounded-lg bg-white/10" />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Accent dot */}
+                    <div
+                      className="absolute top-3 right-3 w-3 h-3 rounded-full animate-pulse"
+                      style={{ backgroundColor: project.accent || meta.accent }}
+                    />
+
+                    {/* Hover overlay */}
+                    <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/90 backdrop-blur-sm text-[10px] font-semibold text-[#1a1a1a]">
+                        <ExternalLink className="w-3 h-3" />
+                        View project
                       </div>
                     </div>
                   </div>
 
-                  {/* Accent dot */}
-                  <div
-                    className="absolute top-3 right-3 w-3 h-3 rounded-full"
-                    style={{ backgroundColor: project.accent }}
-                  />
+                  {/* Meta */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span
+                        className="text-[10px] font-semibold px-2.5 py-1 rounded-full"
+                        style={{
+                          backgroundColor: `${meta.color}15`,
+                          color: meta.color,
+                        }}
+                      >
+                        {meta.label}
+                      </span>
+                    </div>
 
-                  {/* Hover overlay */}
-                  <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/90 backdrop-blur-sm text-[10px] font-semibold text-[#1a1a1a]">
-                      <ExternalLink className="w-3 h-3" />
-                      View project
+                    <h3
+                      className="text-xl font-bold text-[#1a1a1a] mb-1.5 group-hover:text-[#007ACC] transition-colors"
+                      style={{ fontFamily: 'var(--font-syne, sans-serif)' }}
+                    >
+                      {project.title}
+                    </h3>
+                    <p className="text-[#4D4D4D] text-sm leading-relaxed mb-4">{project.tagline}</p>
+
+                    {/* Tech stack pills */}
+                    <div className="flex flex-wrap gap-1.5">
+                      {(project.tech_stack || []).map((tech: string) => (
+                        <span
+                          key={tech}
+                          className="text-[10px] px-2.5 py-1 rounded-md bg-[#F5F5F5] text-[#4D4D4D] font-medium border border-[#e5e7eb]"
+                        >
+                          {tech}
+                        </span>
+                      ))}
                     </div>
                   </div>
-                </div>
-
-                {/* Meta */}
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span
-                      className="text-[10px] font-semibold px-2.5 py-1 rounded-full"
-                      style={{
-                        backgroundColor: `${CATEGORY_COLORS[project.category] || '#007ACC'}15`,
-                        color: CATEGORY_COLORS[project.category] || '#007ACC',
-                      }}
-                    >
-                      {project.category}
-                    </span>
-                  </div>
-
-                  <h3
-                    className="text-xl font-bold text-[#1a1a1a] mb-1.5 group-hover:text-[#007ACC] transition-colors"
-                    style={{ fontFamily: 'var(--font-syne, sans-serif)' }}
-                  >
-                    {project.title}
-                  </h3>
-                  <p className="text-[#4D4D4D] text-sm leading-relaxed mb-4">{project.tagline}</p>
-
-                  {/* Tech stack pills */}
-                  <div className="flex flex-wrap gap-1.5">
-                    {project.tech_stack.map((tech) => (
-                      <span
-                        key={tech}
-                        className="text-[10px] px-2.5 py-1 rounded-md bg-[#F5F5F5] text-[#4D4D4D] font-medium border border-[#e5e7eb]"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
+                </Link>
+              </motion.div>
+            )
+          })}
         </div>
       </div>
     </section>
