@@ -2,18 +2,18 @@ import { NavItem } from '@/types'
 
 export const SITE_CONFIG = {
   name: 'TechOhns',
-  tagline: "Building Tomorrow's Digital Solutions",
+  tagline: "Building Digital Solutions",
   description:
-    'TechOhns is a full-stack software development company delivering world-class web apps, mobile applications, and digital experiences for businesses globally.',
+    'TechOhns is a software development company delivering quality web apps, mobile applications, and digital experiences for businesses globally.',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://techohns.com',
-  email: 'hello@techohns.com',
-  phone: '+260 97 000 0000',
-  whatsapp: '+260970000000',
+  email: 'us@techohns.com',
+  phone: '+260 97 163 2781',
+  whatsapp: '+260971632781',
   location: 'Lusaka, Zambia',
   socials: {
     twitter: 'https://twitter.com/techohns',
     linkedin: 'https://linkedin.com/company/techohns',
-    github: 'https://github.com/techohns',
+    github: 'https://github.com/TheOhns',
     instagram: 'https://instagram.com/techohns',
   },
 }
