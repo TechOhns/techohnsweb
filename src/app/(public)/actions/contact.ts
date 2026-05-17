@@ -58,8 +58,8 @@ export async function submitContact(prevState: any, formData: FormData) {
     return { success: true, message: "Thanks! We've received your message and will be in touch shortly.", error: '' }
   } catch (error: any) {
     if (error instanceof z.ZodError) {
-      const zodError = error as z.ZodError<any>
-      return { success: false, message: '', error: zodError.errors[0].message }
+      const zodError = error as z.ZodError
+      return { success: false, message: '', error: zodError.issues[0].message }
     }
     return { success: false, message: '', error: error.message || 'Failed to submit message' }
   }

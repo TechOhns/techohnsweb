@@ -36,19 +36,12 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div
-              className="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-white text-sm transition-transform group-hover:scale-105"
-              style={{ backgroundColor: 'var(--blue)' }}
-            >
-              TO
-            </div>
-            <span
-              className="font-bold text-xl tracking-tight text-[#1a1a1a]"
-              style={{ fontFamily: 'var(--font-syne, sans-serif)' }}
-            >
-              TechOhns
-            </span>
+          <Link href="/" className="flex items-center group">
+            <img
+              src="/TechOhns.png"
+              alt="TechOhns Logo"
+              className="h-10 w-auto transition-transform group-hover:scale-105"
+            />
           </Link>
 
           {/* Desktop Nav */}
