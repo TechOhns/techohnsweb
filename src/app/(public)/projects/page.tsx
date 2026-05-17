@@ -95,7 +95,7 @@ export default async function ProjectsPage() {
                   style={{ backgroundColor: cover_color }}
                 >
                   {project.cover_image ? (
-                    <img src={project.cover_image} alt={project.title} className="w-full h-full object-cover opacity-80 mix-blend-overlay" />
+                    <img src={project.cover_image} alt={project.title} className="w-full h-full object-cover" />
                   ) : (
                     <>
                       {/* Grid pattern */}

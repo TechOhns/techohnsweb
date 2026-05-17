@@ -90,35 +90,45 @@ ALTER TABLE services         ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contact_messages ENABLE ROW LEVEL SECURITY;
 
 -- Public read (published / active only)
+DROP POLICY IF EXISTS "Public read published projects" ON projects;
 CREATE POLICY "Public read published projects"
   ON projects FOR SELECT USING (published = TRUE);
 
+DROP POLICY IF EXISTS "Public read published posts" ON blog_posts;
 CREATE POLICY "Public read published posts"
   ON blog_posts FOR SELECT USING (published = TRUE);
 
+DROP POLICY IF EXISTS "Public read active team" ON team_members;
 CREATE POLICY "Public read active team"
   ON team_members FOR SELECT USING (active = TRUE);
 
+DROP POLICY IF EXISTS "Public read active services" ON services;
 CREATE POLICY "Public read active services"
   ON services FOR SELECT USING (active = TRUE);
 
 -- Public can submit contact messages
+DROP POLICY IF EXISTS "Public insert contact" ON contact_messages;
 CREATE POLICY "Public insert contact"
   ON contact_messages FOR INSERT WITH CHECK (TRUE);
 
 -- Authenticated (admin) full access
+DROP POLICY IF EXISTS "Admin all projects" ON projects;
 CREATE POLICY "Admin all projects"
   ON projects FOR ALL USING (auth.role() = 'authenticated');
 
+DROP POLICY IF EXISTS "Admin all posts" ON blog_posts;
 CREATE POLICY "Admin all posts"
   ON blog_posts FOR ALL USING (auth.role() = 'authenticated');
 
+DROP POLICY IF EXISTS "Admin all team" ON team_members;
 CREATE POLICY "Admin all team"
   ON team_members FOR ALL USING (auth.role() = 'authenticated');
 
+DROP POLICY IF EXISTS "Admin all services" ON services;
 CREATE POLICY "Admin all services"
   ON services FOR ALL USING (auth.role() = 'authenticated');
 
+DROP POLICY IF EXISTS "Admin all messages" ON contact_messages;
 CREATE POLICY "Admin all messages"
   ON contact_messages FOR ALL USING (auth.role() = 'authenticated');
 
@@ -131,10 +141,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS projects_updated_at ON projects;
 CREATE TRIGGER projects_updated_at
   BEFORE UPDATE ON projects
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
+DROP TRIGGER IF EXISTS posts_updated_at ON blog_posts;
 CREATE TRIGGER posts_updated_at
   BEFORE UPDATE ON blog_posts
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -181,3 +193,38 @@ INSERT INTO services (title, description, long_description, icon, features, "ord
   ARRAY['Architecture review', 'Tech stack selection', 'Digital transformation', 'Code audits', 'Team mentoring'],
   5
 );
+
+-- ─── Storage Buckets & Policies ───────────────────────────────────────────────
+-- Create the public bucket if it doesn't exist
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('techohns-media', 'techohns-media', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Allow public access to read files from 'techohns-media'
+DROP POLICY IF EXISTS "Public Read Access" ON storage.objects;
+CREATE POLICY "Public Read Access"
+ON storage.objects FOR SELECT
+USING (bucket_id = 'techohns-media');
+
+-- Allow authenticated users to upload files to 'techohns-media'
+DROP POLICY IF EXISTS "Authenticated Insert" ON storage.objects;
+CREATE POLICY "Authenticated Insert"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (bucket_id = 'techohns-media');
+
+-- Allow authenticated users to update files in 'techohns-media'
+DROP POLICY IF EXISTS "Authenticated Update" ON storage.objects;
+CREATE POLICY "Authenticated Update"
+ON storage.objects FOR UPDATE
+TO authenticated
+USING (bucket_id = 'techohns-media')
+WITH CHECK (bucket_id = 'techohns-media');
+
+-- Allow authenticated users to delete files from 'techohns-media'
+DROP POLICY IF EXISTS "Authenticated Delete" ON storage.objects;
+CREATE POLICY "Authenticated Delete"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (bucket_id = 'techohns-media');
+
