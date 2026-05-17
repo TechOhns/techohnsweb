@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <rect x="0" y="0" width="1024" height="1024" style="fill:rgb(44,95,129);"/>
+    <g transform="matrix(1,0,0,1,-74.32338,102.636819)">
+        <g transform="matrix(191.666667,0,0,191.666667,765.715047,409.600023)">
+        </g>
+        <text x="432.023px" y="409.6px" style="font-family:'Code-Bold', 'Code Bold';font-weight:700;font-size:191.667px;fill:white;">ech</text>
+    </g>
+    <g transform="matrix(1,0,0,1,1.050297,-46.949328)">
+        <g transform="matrix(187.5,0,0,187.5,409.710424,689.144503)">
+        </g>
+        <text x="267.585px" y="689.145px" style="font-family:'Code-Bold', 'Code Bold';font-weight:700;font-size:187.5px;fill:rgb(255,204,0);">o</text>
+    </g>
+    <g transform="matrix(1,0,0,1,14.948905,-134.585391)">
+        <g transform="matrix(187.5,0,0,187.5,701.811816,777.343066)">
+        </g>
+        <text x="384.187px" y="777.343px" style="font-family:'Code-Bold', 'Code Bold';font-weight:700;font-size:187.5px;fill:white;">hn<tspan x="597.937px " y="777.343px ">s</tspan></text>
+    </g>
+    <g transform="matrix(0.839874,0,0,0.839874,156.892436,57.826672)">
+        <g transform="matrix(277.622564,0,0,277.622564,293.25484,536.665716)">
+        </g>
+        <text x="145.004px" y="536.666px" style="font-family:'Code-Bold', 'Code Bold';font-weight:700;font-size:277.623px;fill:rgb(255,204,0);">T</text>
+    </g>
+</svg>

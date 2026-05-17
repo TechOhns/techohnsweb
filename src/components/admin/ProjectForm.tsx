@@ -1,9 +1,10 @@
 'use client'
 
-import { useActionState, useRef, useState } from 'react'
+import { useActionState, useRef, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Save, Upload, X } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 import { createProject, updateProject } from '@/app/(admin)/actions/projects'
 import { uploadImage } from '@/app/(admin)/actions/storage'
 
@@ -18,6 +19,17 @@ export default function ProjectForm({ project }: { project?: any }) {
   // Create or Update action
   const action = project ? updateProject.bind(null, project.id) : createProject
   const [state, formAction, isPending] = useActionState(action, initialState)
+
+  useEffect(() => {
+    if (state?.error) {
+      toast.error(state.error)
+    } else if (state?.success) {
+      toast.success(state.message || 'Saved successfully!')
+      if (!project) {
+        router.push('/admin/projects')
+      }
+    }
+  }, [state, router, project])
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!project) {
@@ -37,8 +49,9 @@ export default function ProjectForm({ project }: { project?: any }) {
     const result = await uploadImage(formData)
     if (result.success) {
       setCoverImage(result.url)
+      toast.success('Image uploaded successfully')
     } else {
-      alert(result.error)
+      toast.error(result.error)
     }
     setIsUploading(false)
   }
@@ -69,12 +82,6 @@ export default function ProjectForm({ project }: { project?: any }) {
           {isPending ? 'Saving...' : 'Save Project'}
         </button>
       </div>
-
-      {state?.error && (
-        <div className="p-4 bg-red-50 text-red-800 rounded-xl border border-red-200 text-sm font-medium">
-          {state.error}
-        </div>
-      )}
 
       <form action={formAction} id="project-form" className="space-y-6">
         <div className="grid md:grid-cols-3 gap-6">

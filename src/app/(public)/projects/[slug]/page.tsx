@@ -2,46 +2,23 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, ExternalLink, Github } from 'lucide-react'
+import { createClient } from '@/lib/supabase/server'
 
-// Static data — swap for getProjectBySlug(slug) once Supabase is connected
-const PROJECTS: Record<string, {
-  slug: string; title: string; tagline: string; description: string
-  challenge: string; solution: string; outcome: string
-  category: string; tech_stack: string[]; cover_color: string
-  live_url?: string; github_url?: string
-}> = {
-  'lusaka-connect': {
-    slug: 'lusaka-connect',
-    title: 'Lusaka Connect',
-    tagline: 'Urban infrastructure reporting platform for Lusaka City Council',
-    description: 'A real-time platform that allows Lusaka residents to report infrastructure issues — broken roads, burst pipes, downed streetlights — and track their resolution via an interactive map.',
-    challenge: 'The Council had no unified system for citizens to report issues, leading to duplicated complaints, slow response times, and zero visibility into resolution progress.',
-    solution: 'We built a geospatially-powered Next.js application backed by Supabase and PostGIS. Citizens submit reports via a mobile-friendly form with GPS coordinates; council staff triage, assign, and close tickets through an admin dashboard.',
-    outcome: 'Deployed to 3 pilot wards. Average resolution time decreased by 40%. Over 1,200 reports filed in the first month of operation.',
-    category: 'Full Stack',
-    tech_stack: ['Next.js 16', 'TypeScript', 'Supabase', 'PostGIS', 'Mapbox GL', 'Framer Motion'],
-    cover_color: '#007ACC',
-    live_url: 'https://lusaka-connect.co.zm',
-  },
-  'zambia-vote': {
-    slug: 'zambia-vote',
-    title: 'ZambiaVote',
-    tagline: 'Secure digital election platform for higher education institutions',
-    description: 'A tamper-proof online voting system used by universities and colleges across Zambia to run student government and academic elections.',
-    challenge: 'Paper-based elections were expensive to administer, prone to ballot fraud, and produced slow results. Institutions needed a trusted, auditable digital alternative.',
-    solution: 'Built a Next.js app with Supabase Auth for voter identity verification, cryptographic ballot hashing, and a live real-time results dashboard visible post-poll.',
-    outcome: 'Adopted by 4 institutions. 98.7% voter satisfaction. Zero disputed results across 12 elections held on the platform.',
-    category: 'Web App',
-    tech_stack: ['Next.js 16', 'TypeScript', 'Supabase', 'ShadCN UI', 'Zod', 'Zustand'],
-    cover_color: '#1a1a1a',
-  },
+const CATEGORY_META: Record<string, { label: string; color: string }> = {
+  web: { label: 'Web App', color: '#1a1a1a' },
+  mobile: { label: 'Mobile App', color: '#1a3a2a' },
+  fullstack: { label: 'Full Stack', color: '#007ACC' },
+  'ui-ux': { label: 'UI/UX', color: '#FFCC00' },
+  consulting: { label: 'Consulting', color: '#2d1a6e' },
 }
 
 type Params = { slug: string }
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { slug } = await params
-  const project = PROJECTS[slug]
+  const supabase = await createClient()
+  const { data: project } = await supabase.from('projects').select('title, tagline').eq('slug', slug).single()
+  
   if (!project) return { title: 'Project not found' }
   return {
     title: project.title,
@@ -51,14 +28,18 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
 export default async function ProjectDetailPage({ params }: { params: Promise<Params> }) {
   const { slug } = await params
-  const project = PROJECTS[slug]
+  const supabase = await createClient()
+  const { data: project } = await supabase.from('projects').select('*').eq('slug', slug).single()
 
-  if (!project) notFound()
+  if (!project || !project.published) notFound()
+  
+  const meta = CATEGORY_META[project.category] || { label: 'Project', color: '#007ACC' }
+  const cover_color = meta.color
 
   return (
     <>
       {/* Header */}
-      <section className="pt-32 pb-16" style={{ backgroundColor: project.cover_color }}>
+      <section className="pt-32 pb-16" style={{ backgroundColor: cover_color }}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link
             href="/projects"
@@ -66,8 +47,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<Pa
           >
             <ArrowLeft className="w-4 h-4" /> All projects
           </Link>
-          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-white/15 text-white mb-4 inline-block">
-            {project.category}
+          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-white/15 text-white mb-4 inline-block uppercase tracking-wider">
+            {meta.label}
           </span>
           <h1
             className="text-4xl sm:text-5xl font-bold text-white mb-4"
@@ -155,7 +136,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<Pa
                   Tech Stack
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {project.tech_stack.map((t) => (
+                  {(project.tech_stack || []).map((t: string) => (
                     <span
                       key={t}
                       className="text-xs px-3 py-1.5 rounded-lg bg-white border border-[#e5e7eb] text-[#4D4D4D] font-medium"

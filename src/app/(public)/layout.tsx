@@ -1,6 +1,7 @@
 import Navbar from '@/components/shared/Navbar'
 import Footer from '@/components/shared/Footer'
 import AdminReturnBar from '@/components/shared/AdminReturnBar'
+import CookieConsent from '@/components/shared/CookieConsent'
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,6 +12,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       </main>
       <Footer />
       <AdminReturnBar />
+      <CookieConsent />
     </div>
   )
 }

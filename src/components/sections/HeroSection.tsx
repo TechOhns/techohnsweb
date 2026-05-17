@@ -116,7 +116,7 @@ export default function HeroSection() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-lg text-[#4D4D4D] leading-relaxed max-w-lg mb-10"
             >
-              TechOhns delivers world-class software — from sleek web apps to powerful mobile
+              TechOhns delivers high-performance software — from sleek web apps to powerful mobile
               experiences. We turn your ideas into production-ready products, fast.
             </motion.p>
 
@@ -165,8 +165,8 @@ export default function HeroSection() {
                 ))}
               </div>
               <div>
-                <p className="text-xs font-semibold text-[#1a1a1a]">Trusted by 30+ clients</p>
-                <p className="text-xs text-[#9ca3af]">across Africa &amp; beyond</p>
+                <p className="text-xs font-semibold text-[#1a1a1a]">Trusted by 5+ clients</p>
+                <p className="text-xs text-[#9ca3af]">Across Zambia &amp; beyond</p>
               </div>
             </motion.div>
           </div>
