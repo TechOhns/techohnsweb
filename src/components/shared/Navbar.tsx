@@ -74,7 +74,7 @@ export default function Navbar() {
               className="hidden sm:flex items-center gap-1.5 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 hover:shadow-lg active:scale-95"
               style={{ backgroundColor: 'var(--blue)' }}
             >
-              Get a Quote
+              Get a Prototype
               <ChevronRight className="w-4 h-4" />
             </Link>
             <button
